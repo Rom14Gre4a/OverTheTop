@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="OverTheTop.API/OverTheTop.API.csproj" />
+  <Project Path="OverTheTop.Application/OverTheTop.Application.csproj" />
+  <Project Path="OverTheTop.Domain/OverTheTop.Domain.csproj" />
+  <Project Path="OverTheTop.Infrastructure/OverTheTop.Infrastructure.csproj" />
+</Solution>
