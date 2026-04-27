@@ -22,28 +22,41 @@ export function Modal({ open, onClose, title, children, className = "" }: ModalP
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
+      {/* Backdrop — solid, no blur */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/80"
         onClick={onClose}
       />
 
-      {/* Modal */}
-      <div className={`relative z-10 w-full max-w-md glass-strong rounded-2xl shadow-2xl
-        border-[var(--border-strong)] animate-in fade-in zoom-in-95 duration-200 ${className}`}
-        style={{ boxShadow: "0 0 60px var(--accent-glow-sm), 0 24px 48px rgba(0,0,0,0.5)" }}
+      {/* Panel */}
+      <div
+        className={`relative z-10 w-full max-w-md rounded-2xl overflow-hidden ${className}`}
+        style={{
+          background: "linear-gradient(170deg, #1c1c20 0%, #111113 100%)",
+          border: "1px solid rgba(255,255,255,0.10)",
+          boxShadow: "0 40px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.06)",
+        }}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[var(--border)]">
-            <h2 className="font-semibold text-foreground">{title}</h2>
-            <button
-              onClick={onClose}
-              className="text-muted hover:text-foreground transition w-7 h-7 flex items-center justify-center rounded-lg hover:bg-[var(--surface-hover)]"
-            >
-              ✕
-            </button>
-          </div>
+          <>
+            <div className="flex items-center justify-between px-6 pt-5 pb-4">
+              <h2 className="font-bold text-base tracking-wide text-foreground">{title}</h2>
+              <button
+                onClick={onClose}
+                className="w-7 h-7 flex items-center justify-center rounded-lg text-muted transition-colors"
+                style={{ background: "rgba(255,255,255,0.05)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.10)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Accent line under header */}
+            <div style={{ height: 2, background: "var(--accent)" }} />
+          </>
         )}
+
         <div className="px-6 py-5">{children}</div>
       </div>
     </div>
