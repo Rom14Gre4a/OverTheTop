@@ -16,6 +16,7 @@ api.interceptors.response.use(
   (err) => {
     if (err?.response?.status === 401) {
       localStorage.removeItem("token");
+      document.cookie = "ott-token=; path=/; max-age=0";
       window.location.href = "/login";
     }
     return Promise.reject(err);

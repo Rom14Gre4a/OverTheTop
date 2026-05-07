@@ -61,6 +61,7 @@ export interface ExerciseDto {
   id: string; name: string; nameEn: string;
   description: string; tips?: string;
   style: ExerciseStyle; muscleGroup: MuscleGroup;
+  tierRank?: string; isFavorite?: boolean;
 }
 export interface TrainingBlockDto {
   id?: string; exerciseId: string; order: number;
@@ -87,6 +88,8 @@ export const trainingApi = {
   getExercises: (style?: ExerciseStyle) =>
     api.get<ExerciseDto[]>("/api/exercises", { params: style !== undefined ? { style } : {} })
        .then(r => r.data),
+  toggleFavorite: (id: string) =>
+    api.post<{ isFavorite: boolean }>(`/api/exercises/${id}/favorite`).then(r => r.data),
   getMacroperiods: () =>
     api.get<MacroperiodDto[]>("/api/macroperiod").then(r => r.data),
   getMacroperiod: (id: string) =>

@@ -138,6 +138,9 @@ namespace OverTheTop.Infrastructure.Migrations
                     b.Property<int>("Style")
                         .HasColumnType("integer");
 
+                    b.Property<string>("TierRank")
+                        .HasColumnType("text");
+
                     b.Property<string>("Tips")
                         .HasColumnType("text");
 
@@ -388,6 +391,762 @@ namespace OverTheTop.Infrastructure.Migrations
                             NameEn = "Pronation Rotation",
                             Style = 0,
                             Tips = "Рухається все передпліччя, а не лише зап'ясток. Для потужного топ-ролу."
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Найефективніший спосіб розвинути специфічну силу хвату для гаку. Тренує внутрішній обертальний момент зап'ястя.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ручка на лямках",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Конусна ручка на підшипниках ідеально імітує позицію хвату в гаку, дозволяючи ізольовано навантажити потрібні структури.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ручка на підшипниках (конусна)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Циліндричний варіант для різних фаз хвату. Особливо ефективний для розвитку статичної витривалості.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ручка на підшипниках (циліндрична)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Функціональна тяга, що максимально відтворює механіку руки у гаку. Тренує весь кінематичний ланцюг.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Стягування з верхнього/середнього блоку",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Розвиває силу пальців і хвату в специфічній позиції. Незамінний інструмент для гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Кисть ручкою з розширювачем",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Широкий хват змінює кут навантаження та підключає медіальну голову біцепса — ключову для утримання гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс стоячи кривий гриф (широкий хват)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Нижня частина амплітуди (0-90°) прицільно вантажить довгу голову біцепса у слабкій точці.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс сидячи часткова амплітуда",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ізолює біцепс і виключає читинг. Розвиває пікову силу на початку скорочення — саме там де потрібно в гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс в коті / лавка Скотта",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000009"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Антагоніст біцепса. Збалансований розвиток трицепса дозволяє стабілізувати лікоть у позиції гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Тріцепс загально",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000010"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Розвиває задню дельту і ромбоподібні — важливі для утримання плеча назад у позиції гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Горизонтальна тяга блоку",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000011"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Унілатеральний варіант тяги дозволяє включити більше обертання тулуба та пропрацювати дисбаланси.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Тяга блоку кожною рукою",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000012"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Специфічне тренування позиції за столом. Тренує м'язи, що утримують руку під кутом гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Боковуха за столом",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000013"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Внутрішні ротатори плеча є ключовими в гаку. Цільова робота із стрічкою або блоком.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ротація плеча",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000014"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ексцентрична фаза з великим діаметром ручки будує сухожильну силу хвату — те, що дає реальний гак.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ексцентрична ручка (великий діаметр, відкритий хват)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000015"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Базовий грудний жим дає загальну масу, але відносно слабко специфічний для гаку. Корисний для загального силового фундаменту.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим лежачи (гак)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000016"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Розвиває трицепс і нижні грудні. Хороший допоміжний рух для загальної маси верхньої частини тіла.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Бруси (гак)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000017"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ізольований рух для грудних. Забезпечує розтягнення і гіпертрофію, але не специфічний для гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Розводи гантелями",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000018"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Специфічна вправа — тиснеш рукою по столу, тренуючи грудні у нетиповій площині. Середня ефективність для гаку.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Грудні за столом",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000019"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ізометричне утримання позиції гаку. Розвиває стабілізацію, але без динамічної сили.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Статика за столом (гак)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000020"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Супінація під час підйому активує корокобрахіаліс. Корисно, але менш специфічно ніж пронаційний гак.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс стоячи гантелею з супінацією",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000021"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Тренує рух, протилежний гаку. Корисно для балансу, але прямий ефект на гак — невеликий.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Супінація ручкою або лямкою",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000022"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Схоже на лавку Скотта, але за столом. Непогана ізоляція, однак кут навантаження менш оптимальний.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс за столом",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000023"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Традиційне згинання кисті зі штангою. Вправа загальна і не специфічна для хвату у гаку. Слабкий перенос.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Кисть штангою або гантелею (гак)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "D"
+                        },
+                        new
+                        {
+                            Id = new Guid("e2000000-0000-0000-0000-000000000024"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Поєднання повної супінації з боковим рухом — протилежна механіка від гаку. Може формувати неправильні патерни.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Зв'язка (повна супінація + бокова)",
+                            NameEn = "",
+                            Style = 1,
+                            TierRank = "F"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Найбільш наближена до реальної боротьби верхом. Реалістично навантажує замочок, який стає обмежуючим фактором.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Натяжка з середнього блоку за столом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Блок ставимо на рівні очей, рух починається з вирівняної кисті до бокового валика з рівномірною пронацією. Для досвідчених.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Пронація в атакуючому положенні (блок на рівні очей)",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Найкраща вправа для боротьби верхом. Відтворює ключовий стартовий рух з фокусом на пронацію. Технічно складна.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Зриви через пронацію за столом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Блок повище, фокус на верхній частині кисті — вказівний та середній пальці. Не супінуємо руку. Дає контроль кисті на центрі.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Кисть з ручками (циліндрична / конусна)",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Пальці — основа контролю захвату. Поставив захват зручно і утримав пальцями — більша половина роботи до перемоги.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Вправа на пальці з ексцентричною ручкою",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Базова вправа армреслінгу. Виконання: динамічне або статичне з фіксованим кутом. Обов'язкова вправа.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Натяжка за столом з нижнього блоку",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Лямка зміщена ближче до долоні — більш наближене до реальної боротьби. Часто саме замочок визначає переможця.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Замочок за столом (лямка до долоні)",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Блок ставиться вище, рука трішки пронована, короткий рух починається саме з кисті. Специфічний варіант для верху.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ручка на лямках (для верху)",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000009"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Робити в повну амплітуду для максимального розвитку м'яза. Базова і технічно проста, легко відслідковувати прогрес.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс з молотковим хватом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000010"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Базова вправа, яку варто робити кожному початківцю. Для досвідчених атлетів — менш ефективна.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Пронація знизу за столом (захисна пронація)",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000011"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Дуже специфічна вправа, мінімальний рух. Для спортсменів з роками досвіду може вивести пронацію на новий рівень.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Атакуюча пронація — стиль Романа Синейка",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000012"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Класика, через яку проходить кожен армреслер. Вправа на пронацію, а не на підйом. Технічно складна, потрібно відчути.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Прокрут вільною вагою",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000013"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Паралельний хват ближчий до позиції боротьби верхом. Можна робити статично в куті з додатковою вагою.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Підтягування паралельним хватом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000014"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Гарна вправа, особливо для боротьби верхом. Мінус: біль при виконанні — основний стримуючий фактор прогресу.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Замочок за столом через пальці",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000015"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Важко утримати контроль — вага з'їжджає і навантаження переходить на плечі. Легко замінюється іншою вправою.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Натяжка вільною вагою",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000016"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Рука впирається у стіл, ізольована пронація вільною вагою. Перенос на стіл — мінімальний за відчуттям.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ізольована пронація за столом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000017"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Мало переноситься на стіл, не базова для верху. Прогрес відслідкувати майже неможливо.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Замочок вільною вагою у динаміці",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000018"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Лікоть впертий у підлокітник, тонка ручка ближче до фаланг пальців. При обмеженому часі — класична кисть ефективніша.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Кисть ізольована за столом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000019"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Технічно проста, популярна далеко поза армреслінгом. Не є необхідною специфічно для верху.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Біцепс зворотним хватом",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000020"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Спина рідко є обмежуючим фактором в армреслінгу. Виконувати без допоміжних лямок.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Тяга верхнього блоку до грудей",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e3000000-0000-0000-0000-000000000021"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Найгірша вправа для верху. Підходить ЛИШЕ як розминка. З великими вагами навантаження на зап'ястя невиправдане.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Атакуюча пронація у повну амплітуду",
+                            NameEn = "",
+                            Style = 0,
+                            TierRank = "F"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Пряме тренування пресуючого руху за столом. Найспецифічніша вправа для стилю прес.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим за столом (бокова сила)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000002"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Розгинання ліктя з одночасною ротацією — імітує механіку пресу. Вищий рівень специфічності ніж звичайний трицепс.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Тріцепс блок зі зовнішньою ротацією",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000003"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Специфічна вправа для стилю прес. Тренує движок притискання руки до себе і донизу.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Прес ліктем донизу (elbow drop)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "S"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Вузький хват переносить акцент на трицепс та грудні — основні двигуни пресу.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим лежачи (вузький хват)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000005"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ізоляція трицепса. Будує масу і силу головного пресуючого м'яза.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Тріцепс на блоці (пряма ручка)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000006"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Довга голова трицепса отримує максимальне розтягнення. Ефективна вправа для розвитку маси трицепса.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Французький жим (EZ-гриф)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000007"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Передня дельта і трицепс — обидва беруть участь у пресі. Жим стоячи розвиває вибухову силу жиму.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим від плеча стоячи",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000008"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Поперечна тяга через тіло тренує внутрішнє обертання та пресування — специфічно для цього стилю.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Бокова тяга блоку (cross-body)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "A"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000009"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Класичний жим. Будує базову силу грудних і трицепса. Хороший фундамент, але менш специфічний.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим лежачи (середній хват)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000010"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Нахил вперед залучає більше грудних. Ефективна вправа для загального пресуючого м'язового масиву.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Бруси з нахилом вперед",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000011"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Стягування лопаток важливо для стабілізації при пресі. Тяга до грудей з ромбоподібним фокусом.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Ромбоподібні (rhomboid row)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000012"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Передні дельти — активні учасники пресового руху. Ізольована робота дає відчутний ефект.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Передня дельта (гантеля/блок)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "B"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000013"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Ротаційний жим плечима. Залучає більше м'язів, але специфічність для пресу — середня.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Жим Арнольда",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000014"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Широкий хват підтягування залучає грудні і широкі — розвиток загального масиву тіла.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Підтягування широким хватом",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000015"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Горизонтальний жим на блоці. Помірна специфічність для пресу — кут навантаження дещо відрізняється.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Горизонтальний жим (cable chest press)",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "C"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000016"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Широкі і дрібні грудні. Непогана вправа для обсягу, але слабкий перенос на механіку пресу.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Пулловер гантелею",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "D"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000017"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Трапеція. Мінімальна специфічність для стилю прес.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Шраги зі штангою",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "D"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4000000-0000-0000-0000-000000000018"),
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Розгиначі спини. Не специфічні для пресу. Загальна вправа без перенесення на техніку пресу.",
+                            IsLibrary = true,
+                            MuscleGroup = 6,
+                            Name = "Гіперекстензія",
+                            NameEn = "",
+                            Style = 2,
+                            TierRank = "F"
                         });
                 });
 
@@ -703,6 +1462,53 @@ namespace OverTheTop.Infrastructure.Migrations
                     b.ToTable("TrainingSessions");
                 });
 
+            modelBuilder.Entity("OverTheTop.Domain.Entities.UserFavoriteExercise", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "ExerciseId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.ToTable("FavoriteExercises");
+                });
+
+            modelBuilder.Entity("OverTheTop.Domain.Entities.UserSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccentColorsJson")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("AthleteId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ThemeMode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("WallpaperUrl")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AthleteId");
+
+                    b.ToTable("UserSettings");
+                });
+
             modelBuilder.Entity("OverTheTop.Domain.Entities.DayTemplate", b =>
                 {
                     b.HasOne("OverTheTop.Domain.Entities.Mesocycle", "Mesocycle")
@@ -816,6 +1622,28 @@ namespace OverTheTop.Infrastructure.Migrations
                 {
                     b.HasOne("OverTheTop.Domain.Entities.Athlete", "Athlete")
                         .WithMany("TrainingSessions")
+                        .HasForeignKey("AthleteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Athlete");
+                });
+
+            modelBuilder.Entity("OverTheTop.Domain.Entities.UserFavoriteExercise", b =>
+                {
+                    b.HasOne("OverTheTop.Domain.Entities.Exercise", "Exercise")
+                        .WithMany()
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Exercise");
+                });
+
+            modelBuilder.Entity("OverTheTop.Domain.Entities.UserSettings", b =>
+                {
+                    b.HasOne("OverTheTop.Domain.Entities.Athlete", "Athlete")
+                        .WithMany()
                         .HasForeignKey("AthleteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -11,4 +11,5 @@ public class Exercise : BaseEntity
     public ExerciseStyle Style { get; set; }
     public MuscleGroup MuscleGroup { get; set; }
     public bool IsLibrary { get; set; } = true;
+    public string? TierRank { get; set; }
 }

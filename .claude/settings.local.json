@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "PowerShell(docker --version)",
+      "PowerShell(docker compose version)",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoExit\", \"-Command\", \"cd 'C:\\\\Users\\\\Rom14\\\\source\\\\OverTheTop\\\\backend\\\\OverTheTop.API'; dotnet run\" -WindowStyle Normal)",
+      "Bash(npx tsc *)"
+    ]
+  }
+}

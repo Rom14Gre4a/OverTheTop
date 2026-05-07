@@ -1,51 +1,77 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NLog;
+using NLog.Web;
+using OverTheTop.API.Middleware;
 using OverTheTop.Infrastructure;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = LogManager.Setup()
+    .LoadConfigurationFromFile("nlog.config")
+    .GetCurrentClassLogger();
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+logger.Info("=== OverTheTop API starting ===");
 
-builder.Services.AddInfrastructure(builder.Configuration);
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+    builder.Logging.ClearProviders();
+    builder.Host.UseNLog();
+
+    builder.Services.AddControllers();
+    builder.Services.AddOpenApi();
+
+    builder.Services.AddInfrastructure(builder.Configuration);
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer           = true,
+                ValidateAudience         = true,
+                ValidateLifetime         = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer              = builder.Configuration["Jwt:Issuer"],
+                ValidAudience            = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey         = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+            };
+        });
+
+    builder.Services.AddAuthorization();
+
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowFrontend", policy =>
+            policy.WithOrigins(builder.Configuration["Cors:AllowedOrigins"]!.Split(","))
+                  .AllowAnyHeader()
+                  .AllowAnyMethod());
     });
 
-builder.Services.AddAuthorization();
+    var app = builder.Build();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins(builder.Configuration["Cors:AllowedOrigins"]!.Split(","))
-              .AllowAnyHeader()
-              .AllowAnyMethod());
-});
+    app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-var app = builder.Build();
+    if (app.Environment.IsDevelopment())
+        app.MapOpenApi();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
+    app.UseCors("AllowFrontend");
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.MapControllers();
+
+    logger.Info("=== OverTheTop API ready ===");
+
+    app.Run();
 }
-
-app.UseCors("AllowFrontend");
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    logger.Fatal(ex, "Application terminated unexpectedly");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}

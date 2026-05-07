@@ -19,8 +19,8 @@ public class AuthService(IAthleteRepository athleteRepo, IConfiguration config) 
 
         var athlete = new Athlete
         {
-            FirstName    = dto.FirstName,
-            LastName     = dto.LastName,
+            FirstName    = dto.FirstName ?? string.Empty,
+            LastName     = dto.LastName  ?? string.Empty,
             Email        = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             DateOfBirth  = dto.DateOfBirth,

@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddScoped<IAthleteRepository, AthleteRepository>();
         services.AddScoped<ITrainingSessionRepository, TrainingSessionRepository>();
         services.AddScoped<ITournamentRepository, TournamentRepository>();
+        services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
 
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ITrainingPlanService, TrainingPlanService>();

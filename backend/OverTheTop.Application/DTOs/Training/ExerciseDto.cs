@@ -11,4 +11,6 @@ public class ExerciseDto
     public string? Tips { get; set; }
     public ExerciseStyle Style { get; set; }
     public MuscleGroup MuscleGroup { get; set; }
+    public string? TierRank { get; set; }
+    public bool IsFavorite { get; set; }
 }

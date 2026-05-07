@@ -369,7 +369,7 @@ export default function ProfilePage() {
     <div className="flex min-h-screen relative z-10">
       <Sidebar />
 
-      <main className="flex-1 ml-56 p-8">
+      <main className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground">Профіль</h1>

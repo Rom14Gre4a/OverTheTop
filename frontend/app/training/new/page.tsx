@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,10 @@ import {
 } from "@/lib/training";
 
 const STEPS = ["Макроперіод", "Мезоцикли", "Тренувальні дні", "Вправи"];
+
+const TIER_TEXT: Record<string, string> = {
+  S: "#ef4444", A: "#f97316", B: "#84cc16", C: "#60a5fa", D: "#a78bfa", F: "#666",
+};
 
 type DraftMeso  = Omit<MesocycleDto, "id">;
 type DraftDay   = Omit<DayTemplateDto, "id">;
@@ -51,8 +55,12 @@ export default function NewTrainingPlanPage() {
   } | null>(null);
 
   useEffect(() => { if (!getToken()) router.push("/login"); }, [router]);
+  const [exLoading, setExLoading] = useState(true);
   useEffect(() => {
-    trainingApi.getExercises().then(setExercises);
+    trainingApi.getExercises()
+      .then(setExercises)
+      .catch(() => {})
+      .finally(() => setExLoading(false));
   }, []);
 
   // ── helpers ────────────────────────────────────────────
@@ -148,7 +156,27 @@ export default function NewTrainingPlanPage() {
         })),
       });
       router.push("/training");
-    } catch { setError("Помилка збереження. Спробуй ще."); }
+    } catch (err: unknown) {
+      const axErr = err as { response?: { data?: { errors?: Record<string, string[]>; title?: string; detail?: string } }; message?: string };
+      const data = axErr?.response?.data;
+      if (data?.errors) {
+        const fieldNames: Record<string, string> = {
+          name: "Назва", goal: "Мета", focusStyle: "Стиль", startDate: "Дата початку",
+          weeksCount: "Тривалість", "$.goal": "Мета", "$.focusStyle": "Стиль"
+        };
+        const msgs = Object.entries(data.errors)
+          .filter(([k]) => k !== "dto")
+          .flatMap(([k, v]) => v.map(m => `${fieldNames[k] ?? k}: ${m}`))
+          .join("\n");
+        setError(msgs || data.title || "Помилка валідації. Перевір поля.");
+      } else if (data?.title) {
+        setError(data.title);
+      } else if (axErr?.message?.toLowerCase().includes("network")) {
+        setError("Сервер недоступний. Перевір підключення.");
+      } else {
+        setError("Помилка збереження. Спробуй ще.");
+      }
+    }
     finally { setSaving(false); }
   };
 
@@ -164,7 +192,7 @@ export default function NewTrainingPlanPage() {
   return (
     <div className="flex min-h-screen relative z-10">
       <Sidebar />
-      <main className="flex-1 ml-56 p-8 max-w-5xl">
+      <main className="flex-1 p-8 max-w-5xl">
         {/* Header */}
         <div className="mb-6">
           <button onClick={() => router.push("/training")} className="text-muted text-sm hover:text-foreground mb-3 flex items-center gap-1">
@@ -229,7 +257,8 @@ export default function NewTrainingPlanPage() {
                 <div>
                   <label className="text-muted text-xs font-medium uppercase tracking-wide block mb-2">Мета періоду</label>
                   <div className="grid grid-cols-3 gap-2">
-                    {(Object.keys(GOAL_LABELS) as unknown as PeriodGoal[]).map(g => (
+                    {([PeriodGoal.Competition, PeriodGoal.Offseason, PeriodGoal.Strength,
+                       PeriodGoal.Volume, PeriodGoal.Technique, PeriodGoal.Rehabilitation]).map(g => (
                       <OptionButton key={g} active={goal === g} onClick={() => setGoal(g)}>
                         {GOAL_LABELS[g]}
                       </OptionButton>
@@ -239,7 +268,7 @@ export default function NewTrainingPlanPage() {
                 <div>
                   <label className="text-muted text-xs font-medium uppercase tracking-wide block mb-2">Фокус стилю</label>
                   <div className="grid grid-cols-4 gap-2">
-                    {(Object.keys(STYLE_LABELS) as unknown as ExerciseStyle[]).map(s => (
+                    {([ExerciseStyle.TopRoll, ExerciseStyle.Hook, ExerciseStyle.Press, ExerciseStyle.General]).map(s => (
                       <OptionButton key={s} active={focusStyle === s} onClick={() => setFocusStyle(s)}>
                         {STYLE_LABELS[s]}
                       </OptionButton>
@@ -404,14 +433,24 @@ export default function NewTrainingPlanPage() {
                           return (
                             <div key={bi} className="flex items-center gap-3 p-3 glass rounded-xl border-[var(--border)]">
                               <div className="flex-1">
-                                <p className="text-sm font-medium text-foreground">{ex?.name ?? "?"}</p>
+                                <div className="flex items-center gap-2">
+                                  <p className="text-sm font-medium text-foreground">{ex?.name ?? "?"}</p>
+                                  {ex?.tierRank && (
+                                    <span style={{ color: TIER_TEXT[ex.tierRank], fontSize: "var(--fz-micro)", fontWeight: 700,
+                                      border: `1px solid ${TIER_TEXT[ex.tierRank]}55`,
+                                      background: `${TIER_TEXT[ex.tierRank]}18`,
+                                      borderRadius: 3, padding: "1px 5px", lineHeight: 1.6 }}>
+                                      {ex.tierRank}
+                                    </span>
+                                  )}
+                                </div>
                                 <p className="text-xs text-muted mt-0.5">
                                   {b.sets}×{b.reps}
                                   {b.intensityPercent ? ` · ${b.intensityPercent}%` : ""}
                                   {b.restSeconds ? ` · ${b.restSeconds}с` : ""}
                                 </p>
                               </div>
-                              <Badge variant="neutral">{ex ? MUSCLE_LABELS[ex.muscleGroup] : ""}</Badge>
+                              <Badge variant="neutral">{ex ? STYLE_LABELS[ex.style] : ""}</Badge>
                               <button
                                 onClick={() => setBlockModal({
                                   mesoIdx: activeMeso, dayIdx, blockIdx: bi,
@@ -456,22 +495,49 @@ export default function NewTrainingPlanPage() {
         <div className="flex gap-2 mb-4 flex-wrap">
           {(["all", ExerciseStyle.TopRoll, ExerciseStyle.Hook, ExerciseStyle.Press, ExerciseStyle.General] as const).map(f => (
             <button key={f} onClick={() => setExFilter(f)}
-              className={`px-3 py-1 rounded-lg text-xs border transition
+              className={`px-3 py-1.5 rounded-lg text-xs border transition font-medium
                 ${exFilter === f ? "bg-[var(--accent-dim)] border-[var(--accent)] text-[var(--accent)]"
                   : "glass border-[var(--border)] text-muted hover:border-[var(--border-strong)]"}`}>
               {f === "all" ? "Всі" : STYLE_LABELS[f]}
             </button>
           ))}
         </div>
-        <div className="space-y-2 max-h-96 overflow-y-auto pr-1">
-          {filteredEx.map(ex => (
-            <button key={ex.id}
-              onClick={() => pickState && addBlock(pickState.mesoIdx, pickState.dayIdx, ex)}
-              className="w-full text-left p-3 glass rounded-xl border-[var(--border)] hover:border-[var(--accent)] transition">
-              <p className="text-sm font-medium text-foreground">{ex.name}</p>
-              <p className="text-xs text-muted mt-0.5 line-clamp-1">{ex.description}</p>
-            </button>
-          ))}
+        {exLoading && (
+          <p className="text-muted text-sm text-center py-6">Завантаження вправ...</p>
+        )}
+        {!exLoading && filteredEx.length === 0 && (
+          <p className="text-muted text-sm text-center py-6">Вправи не знайдено</p>
+        )}
+        <div className="grid grid-cols-2 gap-2 max-h-[480px] overflow-y-auto pr-1">
+          {filteredEx.map(ex => {
+            const styleIcon: Record<number, string> = { 0: "🔄", 1: "✊", 2: "👊", 3: "💪" };
+            const tc = ex.tierRank ? {
+              text: TIER_TEXT[ex.tierRank],
+              bg: TIER_TEXT[ex.tierRank] + "18",
+              border: TIER_TEXT[ex.tierRank] + "55",
+            } : null;
+            return (
+              <button key={ex.id}
+                onClick={() => pickState && addBlock(pickState.mesoIdx, pickState.dayIdx, ex)}
+                style={{
+                  background: tc ? tc.bg : "var(--surface)",
+                  border: `1px solid ${tc ? tc.border : "var(--border)"}`,
+                }}
+                className="text-left p-3 rounded-xl transition hover:brightness-110 flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="text-base">{styleIcon[ex.style] ?? "💪"}</span>
+                  {ex.tierRank && (
+                    <span style={{ color: tc?.text, borderColor: tc?.border, background: tc?.bg }}
+                      className="text-[10px] font-bold border rounded px-1.5 py-0.5 leading-none">
+                      {ex.tierRank}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs font-semibold text-foreground leading-snug line-clamp-2">{ex.name}</p>
+                <p className="text-[10px] text-muted leading-snug line-clamp-2">{ex.description}</p>
+              </button>
+            );
+          })}
         </div>
       </Modal>
 

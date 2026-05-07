@@ -16,7 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="uk" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full bg-background text-foreground antialiased">
         <ThemeProvider>
-          {children}
+          <div style={{ maxWidth: "calc(var(--app-max) + var(--sidebar-w))", marginInline: "auto", minHeight: "100vh", position: "relative" }}>
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+/* ── Layout constraint ────────────────────────────────── */
+:root {
+  --app-max:   1640px; /* єдине обмеження ширини застосунку */
+  --sidebar-w: 220px;
+
+  /* ── Font size scale (controlled by ThemeContext / Settings → Розмір тексту) ── */
+  --fz-display: 40px;  /* hero numbers, completion screens         */
+  --fz-h1:      28px;  /* page headings                            */
+  --fz-h2:      21px;  /* section/card titles                      */
+  --fz-body:    16px;  /* main body text                           */
+  --fz-sm:      14px;  /* secondary / description text             */
+  --fz-xs:      12px;  /* labels, badges, table cells              */
+  --fz-micro:   11px;  /* tiny captions, timestamps, meta          */
+}
+
 /* ── Runtime theme tokens ─────────────────────────────── */
 :root {
   --background: #0b0b0d;
@@ -10,20 +25,33 @@
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.15);
 
-  /* Default: orange */
-  --accent: #f97316;
-  --accent-light: #fb923c;
-  --accent-dim: rgba(249, 115, 22, 0.15);
-  --accent-glow: rgba(249, 115, 22, 0.35);
-  --accent-glow-sm: rgba(249, 115, 22, 0.2);
+  /* Default: acid lime (overridden at runtime by ThemeContext) */
+  --accent: #8bff00;
+  --accent-light: #a8ff33;
+  --accent-dim: rgba(139, 255, 0, 0.12);
+  --accent-glow: rgba(139, 255, 0, 0.30);
+  --accent-glow-sm: rgba(139, 255, 0, 0.15);
+
+  /* Card system */
+  --card-bg: #0f0f0f;
+  --card-border: #1e1e1e;
+  --card-border-hover: #2a2a2a;
+}
+
+[data-theme="red"] {
+  --accent: #FF1744;
+  --accent-light: #FF5252;
+  --accent-dim: rgba(255, 23, 68, 0.12);
+  --accent-glow: rgba(255, 23, 68, 0.30);
+  --accent-glow-sm: rgba(255, 23, 68, 0.15);
 }
 
 [data-theme="lime"] {
-  --accent: #84cc16;
-  --accent-light: #a3e635;
-  --accent-dim: rgba(132, 204, 22, 0.15);
-  --accent-glow: rgba(132, 204, 22, 0.35);
-  --accent-glow-sm: rgba(132, 204, 22, 0.2);
+  --accent: #8bff00;
+  --accent-light: #a8ff33;
+  --accent-dim: rgba(139, 255, 0, 0.12);
+  --accent-glow: rgba(139, 255, 0, 0.30);
+  --accent-glow-sm: rgba(139, 255, 0, 0.15);
 }
 
 [data-theme="yellow"] {
@@ -48,6 +76,15 @@
   --color-accent-dim: var(--accent-dim);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Map Tailwind text-* to our font scale vars — all scale with settings */
+  --font-size-xs:   var(--fz-micro);
+  --font-size-sm:   var(--fz-xs);
+  --font-size-base: var(--fz-body);
+  --font-size-lg:   var(--fz-sm);
+  --font-size-xl:   var(--fz-h2);
+  --font-size-2xl:  var(--fz-h1);
+  --font-size-3xl:  var(--fz-display);
 }
 
 /* ── Base ─────────────────────────────────────────────── */
@@ -60,14 +97,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* metallic background texture */
+/* subtle grid texture */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,255,255,0.03) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 30% at 80% 100%, var(--accent-glow-sm) 0%, transparent 50%);
+  background: radial-gradient(ellipse 60% 40% at 50% -10%, rgba(255,255,255,0.015) 0%, transparent 60%);
   pointer-events: none;
   z-index: 0;
 }
@@ -87,22 +122,68 @@ body::before {
   border: 1px solid var(--border-strong);
 }
 
-/* ── Neon glow utilities ──────────────────────────────── */
-.glow {
-  box-shadow: 0 0 24px var(--accent-glow), 0 0 8px var(--accent-glow-sm);
+/* ── Glow utilities (stripped — use border accent instead) */
+.glow      { /* removed */ }
+.glow-sm   { /* removed */ }
+.glow-text { /* removed */ }
+.glow-border {
+  border-color: var(--accent) !important;
 }
 
-.glow-sm {
+/* ── Tactical card ────────────────────────────────────── */
+.tcard {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tcard-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--card-border);
+  font-size: var(--fz-xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #888;
+}
+
+/* ── Tactical button ───────────────────────────────────── */
+.tbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  color: #888;
+  font-size: var(--fz-sm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tbtn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
   box-shadow: 0 0 12px var(--accent-glow-sm);
 }
 
-.glow-text {
-  text-shadow: 0 0 20px var(--accent-glow);
+.tbtn-accent {
+  background: var(--accent-dim);
+  border-color: rgba(176, 255, 0, 0.25);
+  color: var(--accent);
 }
 
-.glow-border {
-  border-color: var(--accent) !important;
-  box-shadow: 0 0 12px var(--accent-glow-sm), inset 0 0 12px var(--accent-glow-sm);
+.tbtn-accent:hover {
+  background: rgba(176, 255, 0, 0.2);
+  box-shadow: 0 0 20px var(--accent-glow);
 }
 
 /* ── Scrollbar ────────────────────────────────────────── */

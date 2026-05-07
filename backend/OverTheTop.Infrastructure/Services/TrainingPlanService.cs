@@ -9,25 +9,62 @@ namespace OverTheTop.Infrastructure.Services;
 
 public class TrainingPlanService(AppDbContext db) : ITrainingPlanService
 {
-    public async Task<List<ExerciseDto>> GetExercisesAsync(ExerciseStyle? style = null)
+    public async Task<List<ExerciseDto>> GetExercisesAsync(ExerciseStyle? style = null, Guid? userId = null)
     {
         var q = db.Exercises.Where(e => e.IsLibrary);
         if (style.HasValue) q = q.Where(e => e.Style == style.Value);
-        return await q.OrderBy(e => e.Style).ThenBy(e => e.Name)
-                      .Select(e => MapExercise(e)).ToListAsync();
+        var exercises = await q.OrderBy(e => e.Style).ThenBy(e => e.Name).ToListAsync();
+
+        var favorites = userId.HasValue
+            ? (await db.FavoriteExercises
+                .Where(f => f.UserId == userId.Value)
+                .Select(f => f.ExerciseId)
+                .ToListAsync()).ToHashSet()
+            : new HashSet<Guid>();
+
+        return exercises.Select(e => MapExercise(e, favorites.Contains(e.Id))).ToList();
     }
 
-    public async Task<List<MacroperiodDto>> GetMacroperiodsByAthleteAsync(Guid athleteId) =>
-        await db.Macroperiods
+    public async Task<bool> ToggleFavoriteAsync(Guid exerciseId, Guid userId)
+    {
+        var existing = await db.FavoriteExercises
+            .FirstOrDefaultAsync(f => f.UserId == userId && f.ExerciseId == exerciseId);
+        if (existing is not null)
+        {
+            db.FavoriteExercises.Remove(existing);
+            await db.SaveChangesAsync();
+            return false;
+        }
+        db.FavoriteExercises.Add(new UserFavoriteExercise { UserId = userId, ExerciseId = exerciseId });
+        await db.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<List<MacroperiodDto>> GetMacroperiodsByAthleteAsync(Guid athleteId)
+    {
+        var list = await db.Macroperiods
+            .Include(m => m.Mesocycles)
+                .ThenInclude(ms => ms.DayTemplates)
             .Where(m => m.AthleteId == athleteId)
             .OrderByDescending(m => m.CreatedAt)
-            .Select(m => new MacroperiodDto
+            .ToListAsync();
+
+        return list.Select(m => new MacroperiodDto
+        {
+            Id = m.Id, Name = m.Name, Goal = m.Goal, FocusStyle = m.FocusStyle,
+            StartDate = m.StartDate, WeeksCount = m.WeeksCount,
+            Description = m.Description, CreatedAt = m.CreatedAt,
+            Mesocycles = m.Mesocycles.OrderBy(ms => ms.StartWeek).Select(ms => new MesocycleDto
             {
-                Id = m.Id, Name = m.Name, Goal = m.Goal, FocusStyle = m.FocusStyle,
-                StartDate = m.StartDate, WeeksCount = m.WeeksCount,
-                Description = m.Description, CreatedAt = m.CreatedAt,
-                Mesocycles = new List<MesocycleDto>()
-            }).ToListAsync();
+                Id = ms.Id, Name = ms.Name, Mode = ms.Mode,
+                StartWeek = ms.StartWeek, DurationWeeks = ms.DurationWeeks,
+                DayTemplates = ms.DayTemplates.OrderBy(dt => dt.DayOfWeek).Select(dt => new DayTemplateDto
+                {
+                    DayOfWeek = dt.DayOfWeek, Name = dt.Name, Blocks = []
+                }).ToList()
+            }).ToList()
+        }).ToList();
+    }
 
     public async Task<MacroperiodDto?> GetMacroperiodAsync(Guid id, Guid athleteId)
     {
@@ -112,10 +149,11 @@ public class TrainingPlanService(AppDbContext db) : ITrainingPlanService
         }).ToList()
     };
 
-    private static ExerciseDto MapExercise(Exercise e) => new()
+    private static ExerciseDto MapExercise(Exercise e, bool isFavorite = false) => new()
     {
         Id = e.Id, Name = e.Name, NameEn = e.NameEn,
         Description = e.Description, Tips = e.Tips,
-        Style = e.Style, MuscleGroup = e.MuscleGroup
+        Style = e.Style, MuscleGroup = e.MuscleGroup,
+        TierRank = e.TierRank, IsFavorite = isFavorite
     };
 }

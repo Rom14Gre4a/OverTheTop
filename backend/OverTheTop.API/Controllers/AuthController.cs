@@ -6,8 +6,16 @@ namespace OverTheTop.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, IAthleteRepository athletes) : ControllerBase
 {
+    [HttpGet("check-email")]
+    public async Task<IActionResult> CheckEmail([FromQuery] string email)
+    {
+        if (string.IsNullOrWhiteSpace(email)) return BadRequest();
+        var exists = await athletes.GetByEmailAsync(email.Trim()) is not null;
+        return Ok(new { taken = exists });
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
