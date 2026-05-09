@@ -11,4 +11,7 @@ public interface ITrainingPlanService
     Task<MacroperiodDto?> GetMacroperiodAsync(Guid id, Guid athleteId);
     Task<MacroperiodDto> CreateMacroperiodAsync(Guid athleteId, CreateMacroperiodDto dto);
     Task DeleteMacroperiodAsync(Guid id, Guid athleteId);
+    Task<List<PersonalRecordDto>> GetRecordsAsync(Guid userId);
+    Task<PersonalRecordDto> CreateRecordAsync(Guid userId, CreatePersonalRecordDto dto);
+    Task DeleteRecordAsync(Guid id, Guid userId);
 }

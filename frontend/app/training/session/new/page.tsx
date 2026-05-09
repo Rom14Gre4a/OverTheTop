@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Modal, ModalBody, Chip, IconButton, Button } from "@/components/ui";
@@ -230,7 +230,13 @@ function ExerciseCard({
         ))}
 
         <button
-          onClick={() => onChange({ ...ex, sets: [...ex.sets, emptySet()] })}
+          onClick={() => {
+            const last = ex.sets[ex.sets.length - 1];
+            const next: SessionSet = last
+              ? { ...last, id: uid(), completed: false, isPr: false }
+              : emptySet();
+            onChange({ ...ex, sets: [...ex.sets, next] });
+          }}
           style={{
             marginTop: 2, padding: "7px 12px", borderRadius: 8,
             background: "none", border: "1px dashed #1e2228",
@@ -628,12 +634,20 @@ export default function NewSessionPage() {
   const [ready,       setReady]       = useState(false);
   const [allExercises, setAllExercises] = useState<ExerciseDto[]>([]);
 
+  const searchParams  = useSearchParams();
+
   // Session state
-  const [date,        setDate]        = useState(todayStr);
+  const [date,        setDate]        = useState(
+    () => searchParams.get("date") ?? todayStr()
+  );
   const [focuses,     setFocuses]     = useState<Focus[]>(["top_roll"]);
   const [status,      setStatus]      = useState<"draft" | "active" | "completed">("draft");
   const [exercises,   setExercises]   = useState<SessionExercise[]>([]);
   const [startTime,   setStartTime]   = useState<number | null>(null);
+
+  // Template state
+  const [isTemplate,    setIsTemplate]    = useState(() => searchParams.get("template") === "true");
+  const [templateTitle, setTemplateTitle] = useState("");
 
   // UI state
   const [showPicker,      setShowPicker]      = useState(false);
@@ -644,7 +658,41 @@ export default function NewSessionPage() {
     if (!getToken()) { router.push("/login"); return; }
     setReady(true);
     trainingApi.getExercises().then(setAllExercises).catch(() => {});
-  }, [router]);
+
+    // Load existing session for this date if one exists
+    const dateParam = searchParams.get("date");
+    if (dateParam) {
+      try {
+        const all = JSON.parse(localStorage.getItem("training_sessions") ?? "[]") as {
+          date: string; focuses: Focus[]; exercises: SessionExercise[];
+          status: string; startTime: number | null;
+        }[];
+        const existing = all.find(s => s.date === dateParam);
+        if (existing) {
+          setFocuses(existing.focuses ?? ["top_roll"]);
+          setExercises(existing.exercises ?? []);
+          setStatus((existing.status as "draft" | "active" | "completed") ?? "draft");
+          setStartTime(existing.startTime ?? null);
+        }
+      } catch { /* ignore */ }
+    }
+  }, [router, searchParams]);
+
+  const saveTemplate = () => {
+    if (exercises.length === 0) return false;
+    const tpl = {
+      id: uid(),
+      title: templateTitle.trim() || "Без назви",
+      focuses, exercises,
+      createdAt: new Date().toISOString(),
+    };
+    try {
+      const saved = JSON.parse(localStorage.getItem("training_templates") ?? "[]");
+      saved.push(tpl);
+      localStorage.setItem("training_templates", JSON.stringify(saved));
+    } catch { /* ignore */ }
+    return true;
+  };
 
   const toggleFocus = (f: Focus) => {
     setFocuses(prev =>
@@ -722,56 +770,106 @@ export default function NewSessionPage() {
           <Button variant="ghost" size="sm" onClick={() => router.push("/training")}>← Назад</Button>
 
           <span style={{ fontSize: "var(--fz-body)", fontWeight: 800, color: "#e8edf2", flex: 1 }}>
-            Нове тренування
+            {isTemplate ? "Новий шаблон" : "Нове тренування"}
           </span>
 
-          {/* Date */}
-          <div style={{ position: "relative" }}>
+          {/* Date — hidden in template mode */}
+          {!isTemplate && (
+            <div style={{ position: "relative" }}>
+              <input
+                type="date"
+                value={date}
+                onChange={e => setDate(e.target.value)}
+                style={{
+                  padding: "6px 10px", borderRadius: 8,
+                  background: "#111316", border: "1px solid #1e2228",
+                  color: "#c8d0da", fontSize: "var(--fz-sm)", fontWeight: 600,
+                  outline: "none", cursor: "pointer",
+                }}
+              />
+              {!isToday && (
+                <span style={{
+                  position: "absolute", top: "100%", left: 0, marginTop: 3,
+                  fontSize: "var(--fz-micro)", color: "#f97316", fontWeight: 700, whiteSpace: "nowrap",
+                }}>Додано заднім числом</span>
+              )}
+            </div>
+          )}
+
+          {/* Status — hidden in template mode */}
+          {!isTemplate && (
+            <span style={{
+              padding: "4px 12px", borderRadius: 20, fontSize: "var(--fz-xs)", fontWeight: 700,
+              background: statusColors[status] + "22",
+              border: `1px solid ${statusColors[status]}55`,
+              color: statusColors[status],
+            }}>
+              {statusLabels[status]}
+            </span>
+          )}
+
+          {/* Template toggle */}
+          <button
+            onClick={() => setIsTemplate(v => !v)}
+            style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: "5px 10px", borderRadius: 8, cursor: "pointer",
+              background: isTemplate ? AC + "18" : "#111316",
+              border: `1px solid ${isTemplate ? AC + "55" : "#1e2228"}`,
+              color: isTemplate ? AC : "#3a4048",
+              fontSize: "var(--fz-xs)", fontWeight: 700,
+              transition: "all 0.15s", flexShrink: 0,
+            }}
+          >
+            <span style={{
+              width: 14, height: 14, borderRadius: 3, flexShrink: 0,
+              background: isTemplate ? AC : "transparent",
+              border: `1.5px solid ${isTemplate ? AC : "#3a4048"}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              {isTemplate && <span style={{ fontSize: 9, color: "#000", lineHeight: 1 }}>✓</span>}
+            </span>
+            Шаблон
+          </button>
+
+          {/* Template title input (visible when isTemplate) */}
+          {isTemplate && (
             <input
-              type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
+              value={templateTitle}
+              onChange={e => setTemplateTitle(e.target.value)}
+              placeholder="Назва шаблону..."
               style={{
-                padding: "6px 10px", borderRadius: 8,
-                background: "#111316", border: "1px solid #1e2228",
-                color: "#c8d0da", fontSize: "var(--fz-sm)", fontWeight: 600,
-                outline: "none", cursor: "pointer",
+                padding: "5px 10px", borderRadius: 8, width: 160,
+                background: "#111316", border: `1px solid ${AC}40`,
+                color: "#c8d0da", fontSize: "var(--fz-xs)", fontWeight: 600,
+                outline: "none",
               }}
             />
-            {!isToday && (
-              <span style={{
-                position: "absolute", top: "100%", left: 0, marginTop: 3,
-                fontSize: "var(--fz-micro)", color: "#f97316", fontWeight: 700, whiteSpace: "nowrap",
-              }}>Додано заднім числом</span>
-            )}
-          </div>
+          )}
 
-          {/* Status */}
-          <span style={{
-            padding: "4px 12px", borderRadius: 20, fontSize: "var(--fz-xs)", fontWeight: 700,
-            background: statusColors[status] + "22",
-            border: `1px solid ${statusColors[status]}55`,
-            color: statusColors[status],
-          }}>
-            {statusLabels[status]}
-          </span>
-
-          {/* Save draft */}
+          {/* Save draft / Save template */}
           <Button
             variant="secondary" size="sm"
+            disabled={isTemplate && exercises.length === 0}
             onClick={() => {
+              if (isTemplate) {
+                if (saveTemplate()) router.push("/training");
+                return;
+              }
               try {
                 localStorage.setItem("training_draft", JSON.stringify({ date, focuses, exercises, status }));
               } catch { /* ignore */ }
             }}
-          >Зберегти чернетку</Button>
+          >{isTemplate ? "Зберегти шаблон" : "Зберегти чернетку"}</Button>
 
-          {/* Complete */}
-          <Button
-            size="sm"
-            disabled={exercises.length === 0}
-            onClick={() => setShowPostWorkout(true)}
-          >Завершити</Button>
+          {/* Complete / Save-and-exit not needed for template — one button is enough */}
+          {!isTemplate && (
+            <Button
+              size="sm"
+              disabled={exercises.length === 0}
+              onClick={() => setShowPostWorkout(true)}
+            >Завершити</Button>
+          )}
         </div>
 
         {/* ── Body ──────────────────────────────────────────────────────── */}

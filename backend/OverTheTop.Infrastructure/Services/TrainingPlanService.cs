@@ -149,6 +149,53 @@ public class TrainingPlanService(AppDbContext db) : ITrainingPlanService
         }).ToList()
     };
 
+    public async Task<List<PersonalRecordDto>> GetRecordsAsync(Guid userId)
+    {
+        return await db.PersonalRecords
+            .Include(r => r.Exercise)
+            .Where(r => r.UserId == userId)
+            .OrderByDescending(r => r.Date)
+            .Select(r => MapRecord(r))
+            .ToListAsync();
+    }
+
+    public async Task<PersonalRecordDto> CreateRecordAsync(Guid userId, CreatePersonalRecordDto dto)
+    {
+        var record = new PersonalRecord
+        {
+            UserId     = userId,
+            ExerciseId = dto.ExerciseId,
+            WeightKg   = dto.WeightKg,
+            Reps       = dto.Reps,
+            Date       = dto.Date,
+            Notes      = dto.Notes,
+        };
+        db.PersonalRecords.Add(record);
+        await db.SaveChangesAsync();
+        await db.Entry(record).Reference(r => r.Exercise).LoadAsync();
+        return MapRecord(record);
+    }
+
+    public async Task DeleteRecordAsync(Guid id, Guid userId)
+    {
+        var record = await db.PersonalRecords.FirstOrDefaultAsync(r => r.Id == id && r.UserId == userId);
+        if (record is not null) { db.PersonalRecords.Remove(record); await db.SaveChangesAsync(); }
+    }
+
+    private static PersonalRecordDto MapRecord(PersonalRecord r) => new()
+    {
+        Id           = r.Id,
+        ExerciseId   = r.ExerciseId,
+        ExerciseName = r.Exercise?.Name ?? string.Empty,
+        Style        = r.Exercise?.Style ?? OverTheTop.Domain.Enums.ExerciseStyle.General,
+        MuscleGroup  = r.Exercise?.MuscleGroup ?? OverTheTop.Domain.Enums.MuscleGroup.General,
+        WeightKg     = r.WeightKg,
+        Reps         = r.Reps,
+        Date         = r.Date,
+        Notes        = r.Notes,
+        CreatedAt    = r.CreatedAt,
+    };
+
     private static ExerciseDto MapExercise(Exercise e, bool isFavorite = false) => new()
     {
         Id = e.Id, Name = e.Name, NameEn = e.NameEn,

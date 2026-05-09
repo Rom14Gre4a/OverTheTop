@@ -12,6 +12,8 @@ import {
   trainingApi, type MacroperiodDto,
   GOAL_LABELS, STYLE_LABELS,
 } from "@/lib/training";
+import { TRAINING_ARTICLES, type TrainingArticle } from "@/lib/trainingArticles";
+import { Chip } from "@/components/ui";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -364,11 +366,32 @@ interface TemplateData {
   image?: string;
 }
 
-const MOCK_TEMPLATES: TemplateData[] = [
-  { id: "t1", title: "Top Roll Base", description: "Базова програма для відпрацювання топ-рола", rating: 5, tags: ["Top Roll", "Початківець"] },
-  { id: "t2", title: "Hook Power Block", description: "Силова фаза для гака, 4 тижні", rating: 4, tags: ["Hook", "Сила"] },
-  { id: "t3", title: "Press Development", description: "Прогресивний розвиток преса", rating: 4, tags: ["Press", "Середній"] },
-];
+function useTemplates() {
+  const [templates, setTemplates] = useState<TemplateData[]>([]);
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("training_templates") ?? "[]");
+      setTemplates(raw.map((t: Record<string, unknown>) => ({
+        id:          t.id as string,
+        title:       (t.title as string) || "Без назви",
+        description: `${(t.exercises as unknown[])?.length ?? 0} вправ`,
+        rating:      (t.rating as number) ?? 0,
+        tags:        (t.focuses as string[] | undefined)?.slice(0, 2) ?? [],
+        image:       t.image as string | undefined,
+      })));
+    } catch { /* ignore */ }
+  }, []);
+
+  const remove = (id: string) => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("training_templates") ?? "[]");
+      localStorage.setItem("training_templates", JSON.stringify(raw.filter((t: { id: string }) => t.id !== id)));
+    } catch { /* ignore */ }
+    setTemplates(prev => prev.filter(t => t.id !== id));
+  };
+
+  return { templates, remove };
+}
 
 function StarRating({ value, max = 5 }: { value: number; max?: number }) {
   return (
@@ -380,14 +403,17 @@ function StarRating({ value, max = 5 }: { value: number; max?: number }) {
   );
 }
 
-function TemplateCard({ t, accent }: { t: TemplateData; accent: string }) {
+function TemplateCard({ t, accent, onDelete }: { t: TemplateData; accent: string; onDelete?: () => void }) {
+  const router = useRouter();
   return (
-    <div style={{
-      background: "linear-gradient(180deg, rgba(20,22,26,0.95), rgba(12,13,16,0.98))",
-      border: "1px solid rgba(255,255,255,0.07)",
-      borderRadius: 14, overflow: "hidden",
-      cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
-    }}
+    <div
+      onClick={() => router.push(`/training/session/new?template=true`)}
+      style={{
+        background: "linear-gradient(180deg, rgba(20,22,26,0.95), rgba(12,13,16,0.98))",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 14, overflow: "hidden",
+        cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
+      }}
       onMouseEnter={e => {
         (e.currentTarget as HTMLElement).style.borderColor = accent + "50";
         (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
@@ -413,18 +439,20 @@ function TemplateCard({ t, accent }: { t: TemplateData; accent: string }) {
             fontSize: "var(--fz-h2)",
           }}>💪</div>
         )}
-        {/* Add image button */}
-        <button
-          onClick={e => e.stopPropagation()}
-          style={{
-            position: "absolute", top: 8, right: 8,
-            width: 26, height: 26, borderRadius: 6,
-            background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.1)",
-            color: "#5a6270", fontSize: "var(--fz-xs)", cursor: "pointer",
-            display: "flex", alignItems: "center", justifyContent: "center",
-          }}
-          title="Додати фото"
-        >+</button>
+        {/* Delete button */}
+        {onDelete && (
+          <button
+            onClick={e => { e.stopPropagation(); onDelete(); }}
+            style={{
+              position: "absolute", top: 8, right: 8,
+              width: 26, height: 26, borderRadius: 6,
+              background: "rgba(0,0,0,0.6)", border: "1px solid rgba(239,68,68,0.3)",
+              color: "#ef4444", fontSize: "var(--fz-xs)", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}
+            title="Видалити шаблон"
+          >✕</button>
+        )}
       </div>
 
       {/* Info */}
@@ -475,6 +503,103 @@ function AddTemplateCard({ accent }: { accent: string }) {
       }}>+</div>
       <span style={{ fontSize: "var(--fz-xs)", color: "#3a4048", fontWeight: 600 }}>Новий шаблон</span>
     </div>
+  );
+}
+
+// ─── Article card ─────────────────────────────────────────────────────────────
+
+const DIFF_COLOR: Record<TrainingArticle["difficulty"], string> = {
+  "Початківець": "#34d399",
+  "Середній":    "#fbbf24",
+  "Просунутий":  "#f87171",
+};
+
+function ArticleCard({ a, accent, onClick }: { a: TrainingArticle; accent: string; onClick: () => void }) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        background: "linear-gradient(180deg, rgba(20,22,26,0.95), rgba(12,13,16,0.98))",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 14, padding: "14px 14px 12px",
+        cursor: "pointer", transition: "border-color 0.15s, transform 0.15s",
+        display: "flex", flexDirection: "column", gap: 8,
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLElement).style.borderColor = accent + "50";
+        (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)";
+        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
+      }}
+    >
+      <div style={{ display: "flex", gap: 6, alignItems: "flex-start", justifyContent: "space-between" }}>
+        <div style={{ fontSize: "var(--fz-sm)", fontWeight: 700, color: "#c8d0da", lineHeight: 1.35, flex: 1 }}>
+          {a.title}
+        </div>
+        <span style={{
+          fontSize: "var(--fz-micro)", fontWeight: 800, flexShrink: 0,
+          color: DIFF_COLOR[a.difficulty],
+          background: DIFF_COLOR[a.difficulty] + "18",
+          border: `1px solid ${DIFF_COLOR[a.difficulty]}30`,
+          borderRadius: 4, padding: "2px 6px", marginTop: 1,
+        }}>{a.difficulty}</span>
+      </div>
+      <div style={{ fontSize: "var(--fz-xs)", color: "#3a4048", lineHeight: 1.5 }}>{a.excerpt}</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {a.tags.slice(0, 2).map(tag => (
+            <span key={tag} style={{
+              fontSize: "var(--fz-micro)", fontWeight: 700,
+              color: accent, background: accent + "18",
+              border: `1px solid ${accent}30`,
+              borderRadius: 4, padding: "1px 5px",
+            }}>{tag}</span>
+          ))}
+        </div>
+        <span style={{ fontSize: "var(--fz-micro)", color: "#2a2e32" }}>📖 {a.readMin} хв</span>
+      </div>
+    </div>
+  );
+}
+
+function ArticleModal({ a, onClose }: { a: TrainingArticle | null; onClose: () => void }) {
+  const { accent: AC } = useTheme();
+  if (!a) return null;
+  return (
+    <Modal open={!!a} onClose={onClose} title={a.title} size="lg">
+      <ModalBody>
+        <div style={{ display: "flex", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+          <span style={{
+            fontSize: "var(--fz-xs)", fontWeight: 800,
+            color: DIFF_COLOR[a.difficulty],
+            background: DIFF_COLOR[a.difficulty] + "18",
+            border: `1px solid ${DIFF_COLOR[a.difficulty]}30`,
+            borderRadius: 6, padding: "3px 10px",
+          }}>{a.difficulty}</span>
+          {a.tags.map(tag => (
+            <span key={tag} style={{
+              fontSize: "var(--fz-xs)", fontWeight: 700,
+              color: AC, background: AC + "18",
+              border: `1px solid ${AC}30`,
+              borderRadius: 6, padding: "3px 10px",
+            }}>{tag}</span>
+          ))}
+          <span style={{ fontSize: "var(--fz-xs)", color: "#3a4048", marginLeft: "auto" }}>📖 {a.readMin} хв читання</span>
+        </div>
+        <div style={{ fontSize: "var(--fz-xs)", color: "#3a4048", marginBottom: 16, fontStyle: "italic" }}>
+          Джерело: {a.source}
+        </div>
+        <div style={{ fontSize: "var(--fz-sm)", color: "#c8d0da", lineHeight: 1.75, whiteSpace: "pre-wrap" }}>
+          {a.body.split("**").map((chunk, i) =>
+            i % 2 === 1
+              ? <strong key={i} style={{ color: "#e8edf2", fontWeight: 700 }}>{chunk}</strong>
+              : <span key={i}>{chunk}</span>
+          )}
+        </div>
+      </ModalBody>
+    </Modal>
   );
 }
 
@@ -558,6 +683,9 @@ export default function TrainingPage() {
   const [periods,     setPeriods]     = useState<MacroperiodDto[]>([]);
   const [loading,     setLoading]     = useState(true);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const { templates, remove: removeTemplate } = useTemplates();
+  const [journalTab,   setJournalTab]   = useState<"templates" | "articles">("templates");
+  const [openArticle,  setOpenArticle]  = useState<TrainingArticle | null>(null);
 
   useEffect(() => {
     if (!getToken()) { router.push("/login"); return; }
@@ -588,11 +716,11 @@ export default function TrainingPage() {
             <h1 style={{ fontSize: "var(--fz-h1)", fontWeight: 800, color: "#e8edf2", lineHeight: 1.1 }}>Тренування</h1>
             <p style={{ fontSize: "var(--fz-xs)", color: "#3a4048", marginTop: 4 }}>Макроперіоди та тренувальні плани</p>
           </div>
-          <div style={{ display: "flex", gap: 10 }}>
-            <Button variant="secondary" size="sm" onClick={() => router.push("/training/session/new")}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <Button variant="ghost" size="sm" onClick={() => router.push("/training/new")}>+ Новий план</Button>
+            <Button size="md" onClick={() => router.push("/training/session/new")} glow>
               ⚡ Нове тренування
             </Button>
-            <Button size="sm" onClick={() => router.push("/training/new")}>+ Новий план</Button>
           </div>
         </div>
 
@@ -627,22 +755,41 @@ export default function TrainingPage() {
           flex: 1, display: "flex", padding: "20px 32px 32px", gap: 0, minHeight: 0,
         }}>
 
-          {/* Left: Templates */}
+          {/* Left: Journal (Templates / Articles) */}
           <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-              <span style={{ fontSize: "var(--fz-xs)", color: "#4a5058", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>
-                Шаблони тренувань
+            {/* Header row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, flexWrap: "wrap" }}>
+              <span style={{ fontSize: "var(--fz-xs)", color: "#4a5058", fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", marginRight: 4 }}>
+                Журнал
               </span>
-              <Button variant="ghost" size="sm">+ Додати шаблон</Button>
+              <Chip active={journalTab === "templates"} color={AC} onClick={() => setJournalTab("templates")}>
+                Мої шаблони
+              </Chip>
+              <Chip active={journalTab === "articles"} color={AC} onClick={() => setJournalTab("articles")}>
+                📖 Статті
+              </Chip>
+              <div style={{ flex: 1 }} />
+              {journalTab === "templates" && (
+                <Button variant="ghost" size="sm" onClick={() => router.push("/training/session/new?template=true")}>
+                  + Додати
+                </Button>
+              )}
             </div>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-              gap: 12,
-            }}>
-              {MOCK_TEMPLATES.map(t => <TemplateCard key={t.id} t={t} accent={AC} />)}
-              <AddTemplateCard accent={AC} />
-            </div>
+
+            {journalTab === "templates" ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
+                {templates.map(t => (
+                  <TemplateCard key={t.id} t={t} accent={AC} onDelete={() => removeTemplate(t.id)} />
+                ))}
+                <AddTemplateCard accent={AC} />
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+                {TRAINING_ARTICLES.map(a => (
+                  <ArticleCard key={a.id} a={a} accent={AC} onClick={() => setOpenArticle(a)} />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Divider */}
@@ -682,6 +829,9 @@ export default function TrainingPage() {
 
       {/* Day modal */}
       <DayModal dateKey={selectedDay} onClose={() => setSelectedDay(null)} accent={AC} />
+
+      {/* Article modal */}
+      <ArticleModal a={openArticle} onClose={() => setOpenArticle(null)} />
     </div>
   );
 }

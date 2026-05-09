@@ -84,6 +84,27 @@ export interface MacroperiodDto {
   createdAt: string; mesocycles: MesocycleDto[];
 }
 
+export interface PersonalRecordDto {
+  id: string;
+  exerciseId: string;
+  exerciseName: string;
+  style: ExerciseStyle;
+  muscleGroup: MuscleGroup;
+  weightKg: number;
+  reps: number;
+  date: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface CreatePersonalRecordDto {
+  exerciseId: string;
+  weightKg: number;
+  reps: number;
+  date: string;
+  notes?: string;
+}
+
 export const trainingApi = {
   getExercises: (style?: ExerciseStyle) =>
     api.get<ExerciseDto[]>("/api/exercises", { params: style !== undefined ? { style } : {} })
@@ -98,6 +119,12 @@ export const trainingApi = {
     api.post<MacroperiodDto>("/api/macroperiod", data).then(r => r.data),
   deleteMacroperiod: (id: string) =>
     api.delete(`/api/macroperiod/${id}`),
+  getRecords: () =>
+    api.get<PersonalRecordDto[]>("/api/records").then(r => r.data),
+  createRecord: (data: CreatePersonalRecordDto) =>
+    api.post<PersonalRecordDto>("/api/records", data).then(r => r.data),
+  deleteRecord: (id: string) =>
+    api.delete(`/api/records/${id}`),
 };
 
 export function autoSuggestMesocycles(goal: PeriodGoal, weeks: number): Omit<MesocycleDto, "dayTemplates">[] {

@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<DayTemplate> DayTemplates => Set<DayTemplate>();
     public DbSet<TrainingBlock> TrainingBlocks => Set<TrainingBlock>();
     public DbSet<UserFavoriteExercise> FavoriteExercises => Set<UserFavoriteExercise>();
+    public DbSet<PersonalRecord> PersonalRecords => Set<PersonalRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

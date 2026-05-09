@@ -8,10 +8,12 @@ import { useTheme } from "@/context/ThemeContext";
 import { THEMES } from "@/lib/theme";
 
 const NAV = [
-  { href: "/dashboard",   icon: "⊞",  label: "Дашборд"    },
-  { href: "/graph",       icon: "🕸",  label: "Граф"        },
+  { href: "/dashboard",   icon: "⊞",  label: "Дашборд"     },
+  { href: "/graph",       icon: "🕸",  label: "Граф"         },
+  { href: "/evolution",   icon: "🧬",  label: "Evolution"   },
   { href: "/training",    icon: "⚡",  label: "Тренування"  },
   { href: "/tournaments", icon: "🏆",  label: "Турніри"     },
+  { href: "/records",     icon: "🥇",  label: "Рекорди"     },
   { href: "/analytics",   icon: "📊",  label: "Аналітика"   },
   { href: "/almanac",     icon: "📖",  label: "Альманах"    },
   { href: "/profile",     icon: "◉",   label: "Профіль"     },
