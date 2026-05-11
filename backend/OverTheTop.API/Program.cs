@@ -4,7 +4,10 @@ using Microsoft.IdentityModel.Tokens;
 using NLog;
 using NLog.Web;
 using OverTheTop.API.Middleware;
+using OverTheTop.Application.Interfaces;
+using OverTheTop.Evolution.Services;
 using OverTheTop.Infrastructure;
+using OverTheTop.Infrastructure.Services;
 
 var logger = LogManager.Setup()
     .LoadConfigurationFromFile("nlog.config")
@@ -19,10 +22,13 @@ try
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers()
+        .AddApplicationPart(typeof(OverTheTop.Evolution.Controllers.EvolutionController).Assembly);
     builder.Services.AddOpenApi();
 
+    builder.Services.AddSingleton<MapGeneratorService>();
     builder.Services.AddInfrastructure(builder.Configuration);
+    builder.Services.AddScoped<IEvolutionResourceService, EvolutionResourceService>();
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -40,7 +46,12 @@ try
             };
         });
 
-    builder.Services.AddAuthorization();
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("AdminOnly",  p => p.RequireRole("Admin"));
+        options.AddPolicy("CoachPlus",  p => p.RequireRole("Admin", "Coach"));
+        options.AddPolicy("Athlete",    p => p.RequireRole("Admin", "Coach", "Athlete"));
+    });
 
     builder.Services.AddCors(options =>
     {

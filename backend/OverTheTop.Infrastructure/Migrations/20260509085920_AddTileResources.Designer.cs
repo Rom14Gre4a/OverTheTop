@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OverTheTop.Infrastructure.Data;
@@ -11,9 +12,11 @@ using OverTheTop.Infrastructure.Data;
 namespace OverTheTop.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509085920_AddTileResources")]
+    partial class AddTileResources
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +66,6 @@ namespace OverTheTop.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("PreferredStyle")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Role")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -1317,38 +1317,6 @@ namespace OverTheTop.Infrastructure.Migrations
                     b.ToTable("PersonalRecords");
                 });
 
-            modelBuilder.Entity("OverTheTop.Domain.Entities.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("AthleteId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AthleteId");
-
-                    b.ToTable("RefreshTokens");
-                });
-
             modelBuilder.Entity("OverTheTop.Domain.Entities.TileResource", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1690,17 +1658,6 @@ namespace OverTheTop.Infrastructure.Migrations
                     b.Navigation("Exercise");
                 });
 
-            modelBuilder.Entity("OverTheTop.Domain.Entities.RefreshToken", b =>
-                {
-                    b.HasOne("OverTheTop.Domain.Entities.Athlete", "Athlete")
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("AthleteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Athlete");
-                });
-
             modelBuilder.Entity("OverTheTop.Domain.Entities.TournamentParticipant", b =>
                 {
                     b.HasOne("OverTheTop.Domain.Entities.Athlete", "Athlete")
@@ -1785,8 +1742,6 @@ namespace OverTheTop.Infrastructure.Migrations
 
             modelBuilder.Entity("OverTheTop.Domain.Entities.Athlete", b =>
                 {
-                    b.Navigation("RefreshTokens");
-
                     b.Navigation("TournamentParticipants");
 
                     b.Navigation("TrainingSessions");

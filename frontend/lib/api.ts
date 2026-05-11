@@ -14,7 +14,8 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err?.response?.status === 401) {
+    const isAuthEndpoint = err?.config?.url?.startsWith("/api/auth/");
+    if (err?.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem("token");
       document.cookie = "ott-token=; path=/; max-age=0";
       window.location.href = "/login";

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Set-Location \"c:\\Users\\Rom14\\source\\OverTheTop *)",
+      "PowerShell(Stop-Process *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet ef migrations *)",
+      "Bash(dotnet ef database *)"
+    ]
+  }
+}

@@ -20,12 +20,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<TrainingBlock> TrainingBlocks => Set<TrainingBlock>();
     public DbSet<UserFavoriteExercise> FavoriteExercises => Set<UserFavoriteExercise>();
     public DbSet<PersonalRecord> PersonalRecords => Set<PersonalRecord>();
+    public DbSet<TileResource>   TileResources   => Set<TileResource>();
+    public DbSet<RefreshToken>   RefreshTokens   => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         modelBuilder.Entity<UserFavoriteExercise>()
             .HasKey(f => new { f.UserId, f.ExerciseId });
+        modelBuilder.Entity<TileResource>()
+            .HasIndex(r => new { r.WorldSeed, r.X, r.Y })
+            .IsUnique();
         SeedExercises(modelBuilder);
         base.OnModelCreating(modelBuilder);
     }

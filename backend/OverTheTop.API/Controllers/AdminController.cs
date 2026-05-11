@@ -5,7 +5,7 @@ namespace OverTheTop.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class AdminController(IWebHostEnvironment env) : ControllerBase
 {
     private string LogsPath => Path.Combine(env.ContentRootPath, "logs");

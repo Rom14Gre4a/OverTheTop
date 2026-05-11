@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OverTheTop.Application\OverTheTop.Application.csproj" />
     <ProjectReference Include="..\OverTheTop.Infrastructure\OverTheTop.Infrastructure.csproj" />
+    <ProjectReference Include="..\Evolution\OverTheTop.Evolution.csproj" />
   </ItemGroup>
 
 </Project>

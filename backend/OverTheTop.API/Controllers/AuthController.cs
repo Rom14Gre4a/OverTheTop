@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OverTheTop.Application.DTOs.Auth;
 using OverTheTop.Application.Interfaces;
@@ -37,6 +39,50 @@ public class AuthController(IAuthService authService, IAthleteRepository athlete
         {
             var result = await authService.LoginAsync(dto);
             return Ok(result);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto dto)
+    {
+        try
+        {
+            var result = await authService.RefreshTokenAsync(dto.RefreshToken);
+            return Ok(result);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] RefreshTokenRequestDto dto)
+    {
+        try
+        {
+            await authService.RevokeTokenAsync(dto.RefreshToken);
+            return NoContent();
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        var athleteId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        try
+        {
+            await authService.ChangePasswordAsync(athleteId, dto);
+            return NoContent();
         }
         catch (UnauthorizedAccessException ex)
         {
