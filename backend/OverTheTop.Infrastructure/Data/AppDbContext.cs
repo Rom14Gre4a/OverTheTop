@@ -22,6 +22,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<PersonalRecord> PersonalRecords => Set<PersonalRecord>();
     public DbSet<TileResource>   TileResources   => Set<TileResource>();
     public DbSet<RefreshToken>   RefreshTokens   => Set<RefreshToken>();
+    public DbSet<Unit>           Units           => Set<Unit>();
+    public DbSet<ColonyStorage>  ColonyStorages  => Set<ColonyStorage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -30,6 +32,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasKey(f => new { f.UserId, f.ExerciseId });
         modelBuilder.Entity<TileResource>()
             .HasIndex(r => new { r.WorldSeed, r.X, r.Y })
+            .IsUnique();
+        modelBuilder.Entity<ColonyStorage>()
+            .HasIndex(s => new { s.WorldSeed, s.ColonyKind })
             .IsUnique();
         SeedExercises(modelBuilder);
         base.OnModelCreating(modelBuilder);

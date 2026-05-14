@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using OverTheTop.Evolution.Models;
 
 namespace OverTheTop.Evolution.Services;
@@ -7,7 +8,11 @@ public sealed class MapGeneratorService
     public const int Width  = 140;
     public const int Height = 100;
 
-    public WorldMap Generate(int seed = 42)
+    private readonly ConcurrentDictionary<int, WorldMap> _cache = new();
+
+    public WorldMap Generate(int seed = 42) => _cache.GetOrAdd(seed, GenerateCore);
+
+    private WorldMap GenerateCore(int seed)
     {
         var rng   = new Random(seed);
         var tiles = new TileType[Width * Height];
@@ -94,7 +99,7 @@ public sealed class MapGeneratorService
         return new WorldMap { Width = Width, Height = Height, Seed = seed, Tiles = tiles };
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static (double freq, double amp, double phase)[] MakeBumps(
         Random rng, int count,

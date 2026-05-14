@@ -6,4 +6,8 @@ public enum ResourceKind : byte
     Wood   = 1,
     Stone  = 2,
     Energy = 3,
+    // Rare
+    Gems   = 4,
+    Oil    = 5,
+    Ore    = 6,
 }

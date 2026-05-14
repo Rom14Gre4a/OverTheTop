@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\OverTheTop.Domain\OverTheTop.Domain.csproj" />
     <ProjectReference Include="..\OverTheTop.Application\OverTheTop.Application.csproj" />
+    <ProjectReference Include="..\Evolution\OverTheTop.Evolution.csproj" />
   </ItemGroup>
 
   <ItemGroup>

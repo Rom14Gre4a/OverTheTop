@@ -5,6 +5,7 @@ using NLog;
 using NLog.Web;
 using OverTheTop.API.Middleware;
 using OverTheTop.Application.Interfaces;
+using OverTheTop.Evolution.Hubs;
 using OverTheTop.Evolution.Services;
 using OverTheTop.Infrastructure;
 using OverTheTop.Infrastructure.Services;
@@ -27,8 +28,15 @@ try
     builder.Services.AddOpenApi();
 
     builder.Services.AddSingleton<MapGeneratorService>();
+    builder.Services.AddSingleton<OverTheTop.Evolution.Services.ColonyStartService>();
+    builder.Services.AddSingleton<OverTheTop.Evolution.Services.AStarService>();
+    builder.Services.AddSingleton<OverTheTop.Evolution.Services.SimulationSpeedService>();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddScoped<IEvolutionResourceService, EvolutionResourceService>();
+    builder.Services.AddScoped<IUnitService, UnitService>();
+    builder.Services.AddScoped<ISimulationService, SimulationService>();
+    builder.Services.AddSignalR();
+    builder.Services.AddHostedService<SimulationTickService>();
 
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
@@ -58,7 +66,8 @@ try
         options.AddPolicy("AllowFrontend", policy =>
             policy.WithOrigins(builder.Configuration["Cors:AllowedOrigins"]!.Split(","))
                   .AllowAnyHeader()
-                  .AllowAnyMethod());
+                  .AllowAnyMethod()
+                  .AllowCredentials());
     });
 
     var app = builder.Build();
@@ -72,6 +81,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.MapControllers();
+    app.MapHub<SimulationHub>("/hubs/simulation");
 
     logger.Info("=== OverTheTop API ready ===");
 

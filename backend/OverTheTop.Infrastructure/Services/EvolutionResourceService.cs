@@ -18,7 +18,7 @@ public class EvolutionResourceService(AppDbContext db) : IEvolutionResourceServi
             .ToListAsync();
 
         if (existing.Count > 0)
-            return existing.Select(Map).ToList();
+            return existing.Where(r => r.Amount > 0).Select(Map).ToList();
 
         var rng       = new Random(seed ^ 0x6E45_A3B1);
         var resources = new List<TileResource>();
